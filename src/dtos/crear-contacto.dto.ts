@@ -8,12 +8,15 @@ export class CrearContactoDto{
     primerNombre:string;
 
     @IsOptional()
+    @Expose({name:"segundo_nombre"})
     segundoNombre:string;
 
     @IsNotEmpty({message:"Este campo es obligatorio "})
+    @Expose({name:"primer_apellido"})
     primerApellido:string;
     
     @IsNotEmpty({message:"Este campo es obligatorio "})
+    @Expose({name:"segundo_apellido"})
     segundoApellido:string;
     
     @IsNotEmpty({message:"Este campo es obligatorio "})

@@ -4,13 +4,15 @@ import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 export class ContactoCreadoDto{
     @Expose({name:"primerNombre"})
     primer_nombre:string;
-
-    segundoNombre:string;
-
     
-    primerApellido:string;
-    
-    segundoApellido:string;
+    @Expose({name:"segundoNombre"})
+    segundo_nombre:string;
+
+    @Expose({name:"primerApellido"})
+    primer_apellido:string;
+
+    @Expose({name:"segundoApellido"})
+    segundo_apellido:string;
     
     documento: string;
     
