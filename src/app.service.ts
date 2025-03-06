@@ -4,8 +4,11 @@ import { AppRepository } from './app.repository';
 
 @Injectable()
 export class AppService {
-  mostrarContactos(): IContacto[] {
-    return AppRepository.mostrarContactos();
+  mostrarContactos(pagina: number = 1, nContactos: number = 10): IContacto[] {
+    const contactos = AppRepository.mostrarContactos();
+    const indexInicial = (pagina - 1) * nContactos;
+    const indexFinal = indexInicial + nContactos;
+    return contactos.slice(indexInicial, indexFinal);
   }
 
   obtenerContacto(idContacto : number): IContacto {

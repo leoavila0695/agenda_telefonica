@@ -1,18 +1,22 @@
-import { Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpException, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { IContacto } from './contactos.interface';
-import { isNumber } from 'util';
 import { CrearContactoDto } from './dtos/crear-contacto.dto';
 import { plainToInstance } from 'class-transformer';
 import { ContactoCreadoDto } from './dtos/contacto-creado.dto';
+import { MostrarRegistrosParamsDto } from './dtos/x';
+import { ListaContactosDto } from './dtos/lista_contactos.dto';
+
 
 @Controller("api/v1/contactos")
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  mostrarContactos(): IContacto[] {
-    return this.appService.mostrarContactos();
+  mostrarContactos(@Query() parametros: MostrarRegistrosParamsDto)/*: IContacto[] */{
+    const {pagina, numeroDeContactos}= parametros
+    const contactos = this.appService.mostrarContactos(pagina, numeroDeContactos);
+    return plainToInstance(ListaContactosDto, contactos)
   }
 
   @Get("/:contactoId")
@@ -43,8 +47,6 @@ export class AppController {
       const contacto = this.appService.crearContacto(nuevoContacto as IContacto);
       return plainToInstance(ContactoCreadoDto, contacto);
   }
-
-
 
   @Put("/:contactoId")
   actualizarContacto(@Param("contactoId") contactoId: string, @Body() datosActualizados: IContacto): IContacto {
