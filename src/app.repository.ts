@@ -1,5 +1,6 @@
 import { get } from "http";
 import { IContacto } from "./contactos.interface";
+import { PersonasModels } from "./models/personas.models";
 
 export class AppRepository{
     private static contactos:IContacto[]=[{
@@ -904,11 +905,12 @@ export class AppRepository{
     
     }];
     
-    public static mostrarContactos():IContacto[]{
-        return this.contactos;
+    public static mostrarContactos(paginaActual = 1, registrosPorPagina = 10){
+        return PersonasModels.findAndCountAll();
     }
-    public static obtenerContacto(id: number):IContacto | undefined{
-        return this.contactos.find(contacto => contacto.id === id);
+    public static obtenerContacto(id: number){
+
+        return PersonasModels.findByPk(id);
     }
 
 
