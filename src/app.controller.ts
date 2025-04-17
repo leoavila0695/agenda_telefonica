@@ -18,6 +18,8 @@ import { ContactoCreadoDto } from './dtos/contacto-creado.dto';
 import { MostrarRegistrosParamsDto } from './dtos/x';
 import { ListaContactosDto } from './dtos/lista_contactos.dto';
 import { PersonasModels } from './models/personas.models';
+import { PersonaRepository } from './repositories/persona.repository';
+import { ActualizarContactoDto } from './dtos/actualizar-contacto.dto';
 
 @Controller('api/v1/contactos')
 export class AppController {
@@ -36,7 +38,9 @@ export class AppController {
   }
 
   @Get('/:contactoId')
-  obtenerContacto(@Param('contactoId') contactoId: string) /*: IContacto*/ {
+  async obtenerContacto(
+    @Param('contactoId') contactoId: string,
+  ) /*: IContacto*/ {
     const id = Number(contactoId);
     if (isNaN(id)) {
       throw new Error('este ID no es un numero valido');
@@ -49,15 +53,17 @@ export class AppController {
   }
 
   @Delete('/:contactoId')
-  eliminarContacto(@Param('contactoId') contactoId: number) /*: IContacto[]*/ {
-    console.log(typeof contactoId);
-    if (!Number(contactoId)) {
+  async eliminarContacto(
+    @Param('contactoId') contactoId: string,
+  ): Promise<string> /*: IContacto[]*/ {
+    const id = Number(contactoId);
+    if (isNaN(id)) {
       throw new HttpException(
-        'este ID no es un numero',
+        'este ID no es un numero valido aca',
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.appService.eliminarContacto(Number(contactoId));
+    return PersonaRepository.eliminarPersonaPorId(id);
   }
 
   @Post()
@@ -67,21 +73,18 @@ export class AppController {
   }
 
   @Put('/:contactoId')
-  actualizarContacto(
+  async actualizarContacto(
     @Param('contactoId') contactoId: string,
-    @Body() datosActualizados: IContacto,
-  ): IContacto {
+    @Body() datosActualizados: ActualizarContactoDto,
+  ): Promise<PersonasModels> {
     const id = Number(contactoId);
+
     if (isNaN(id)) {
-      throw new Error('El ID no es un numero valido');
+      throw new HttpException(
+        'El ID no es un numero valido',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    const contactoActualizado = this.appService.actualizarContacto(
-      id,
-      datosActualizados,
-    );
-    if (!contactoActualizado) {
-      throw new Error('Contacto no encontrado');
-    }
-    return contactoActualizado;
+    return await this.appService.actualizarContacto(id, datosActualizados);
   }
 }

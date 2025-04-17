@@ -11,9 +11,8 @@ import {
 export class PersonasModels extends Model {
   // @AutoIncrement
   // @PrimaryKey
-  // @Column({type:DataType.INTEGER, field:"id"})
+  // @Column({ type: DataType.INTEGER, field: 'id' })
   // id: number;
-
   @Column({ type: DataType.INTEGER, field: 'primer_nombre' })
   primerNombre: string;
 

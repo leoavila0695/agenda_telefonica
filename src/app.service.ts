@@ -3,14 +3,20 @@ import { IContacto } from './contactos.interface';
 import { AppRepository } from './app.repository';
 import { PersonaRepository } from './repositories/persona.repository';
 import { PersonasModels } from './models/personas.models';
+import { ActualizarContactoDto } from './dtos/actualizar-contacto.dto';
 
 @Injectable()
 export class AppService {
   async mostrarContactos(
     pagina: number = 1,
     nContactos: number = 10,
-  ): Promise<IContacto[]> {
-    return await PersonaRepository.obtenerContactos(pagina, nContactos);
+  ): Promise<any> {
+    const contactos = await PersonaRepository.obtenerContactos(
+      nContactos,
+      pagina,
+    );
+    console.log({ contactos });
+    return contactos;
   }
 
   async obtenerContacto(idContacto: number): Promise<PersonasModels> {
@@ -33,12 +39,12 @@ export class AppService {
 
   async actualizarContacto(
     id: number,
-    datosActualizados: IContacto,
+    datosActualizados: ActualizarContactoDto,
   ): Promise<PersonasModels> {
     const contacto = await this.obtenerContacto(id);
     if (!contacto) {
       throw new HttpException(
-        'No se encontro el contacto',
+        'No se encontro el contacto con ID: ${id}',
         HttpStatus.NOT_FOUND,
       );
     }
