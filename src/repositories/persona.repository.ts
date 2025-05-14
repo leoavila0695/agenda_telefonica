@@ -4,59 +4,33 @@ import { IContacto } from 'src/contactos.interface';
 
 export class PersonaRepository {
   public static async buscarPersonaPorId(id: number) {
-    const persona = await PersonasModels.findByPk(id);
-
-    if (!persona) {
-      throw new HttpException(
-        'No se encontro una persona con el ID: ${id}',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return await persona;
+    return await PersonasModels.findByPk(id);
   }
 
-  public static async obtenerContactos(limite: number, paginaActual: number) {
-    return await PersonasModels.findAndCountAll({
-      limit: limite,
-      offset: (paginaActual - 1) * limite,
-    });
+  public static async obtenerContactos() {
+    return await PersonasModels.findAndCountAll();
   }
 
-  public static async crearPersona(persona: {
-    primerNombre: string;
-    segundoNombre: string;
-    primerApellido: string;
-    segundoApellido: string;
-    documento: string;
-    telefono: string;
-  }) {
+  public static async crearPersona(persona: Partial<IContacto>) {
     return await PersonasModels.create(persona);
   }
 
-  public static async eliminarPersonaPorId(id: number): Promise<string> {
+  public static async eliminarPersonaPorId(id: number) {
     const persona = await PersonasModels.findByPk(id);
-    if (!persona) {
-      throw new HttpException(
-        'No se encontro una persona con el ID: ${id}',
-        HttpStatus.NOT_FOUND,
-      );
+    if (persona) {
+      await persona.destroy();
     }
-    await persona.destroy();
-    return 'la persona con ID ${id} ha sido eliminada exitosamente';
+    return persona;
   }
 
   public static async actualizarPersonaPorId(
     id: number,
-    datosActualizados: IContacto,
-  ): Promise<string> {
+    datosActualizados: Partial<IContacto>,
+  ) {
     const persona = await PersonasModels.findByPk(id);
-    if (!persona) {
-      throw new HttpException(
-        'No se encontro una persona con el ID: ${id}',
-        HttpStatus.NOT_FOUND,
-      );
+    if (persona) {
+      await persona.update(datosActualizados);
     }
-    await persona.update(datosActualizados);
-    return 'el contacto con el ID: ${id} ha sido actualizada exitosamente.';
+    return persona;
   }
 }
